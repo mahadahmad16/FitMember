@@ -15,8 +15,8 @@ function Navbar() {
     <header className="app-navbar">
       <div className="container app-navbar__inner">
         <NavLink to="/" className="app-navbar__brand" onClick={() => setOpen(false)}>
-          <span className="app-navbar__brand-mark">IF</span>
-          IRONFORGE
+          <span className="app-navbar__brand-mark">FM</span>
+          FITMEMBER
         </NavLink>
 
         <button
