@@ -71,6 +71,15 @@ function HomePage({ activeCount }) {
   return (
     <>
       <section className="home-hero">
+        <div className="home-hero__graphic" aria-hidden="true">
+          <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="300" cy="300" r="280" className="home-hero__ring home-hero__ring--outer" />
+            <circle cx="300" cy="300" r="210" className="home-hero__ring home-hero__ring--mid" />
+            <circle cx="300" cy="300" r="140" className="home-hero__ring home-hero__ring--inner" />
+            <circle cx="300" cy="300" r="46" className="home-hero__ring home-hero__ring--core" />
+          </svg>
+        </div>
+
         <div className="container">
           <p className="home-hero__eyebrow">Gym Membership System</p>
           <h1 className="home-hero__title">

@@ -285,7 +285,77 @@ h3 {
 /* ---------- Home hero ---------- */
 
 .home-hero {
+  position: relative;
+  overflow: hidden;
   padding: 64px 0 40px;
+  background-image: radial-gradient(
+    ellipse 700px 500px at 88% 35%,
+    rgba(245, 166, 35, 0.1),
+    transparent 70%
+  );
+}
+
+.home-hero .container {
+  position: relative;
+  z-index: 1;
+}
+
+.home-hero__graphic {
+  position: absolute;
+  top: 50%;
+  right: -140px;
+  transform: translateY(-50%);
+  width: 520px;
+  height: 520px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.home-hero__graphic svg {
+  width: 100%;
+  height: 100%;
+}
+
+.home-hero__ring {
+  fill: none;
+  stroke-width: 2;
+}
+
+.home-hero__ring--outer {
+  stroke: var(--color-steel-light);
+  opacity: 0.2;
+}
+
+.home-hero__ring--mid {
+  stroke: var(--color-amber);
+  stroke-width: 3;
+  opacity: 0.28;
+}
+
+.home-hero__ring--inner {
+  stroke: var(--color-plate-red);
+  stroke-width: 4;
+  opacity: 0.22;
+}
+
+.home-hero__ring--core {
+  fill: var(--color-ink);
+  opacity: 0.06;
+}
+
+@media (max-width: 860px) {
+  .home-hero__graphic {
+    width: 360px;
+    height: 360px;
+    right: -160px;
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 560px) {
+  .home-hero__graphic {
+    display: none;
+  }
 }
 
 .home-hero__eyebrow {
@@ -782,7 +852,17 @@ h3 {
 }
 
 .home-cta {
-  background: var(--color-ink);
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-ink);
+  background-image: radial-gradient(circle at 12% 20%, rgba(200, 16, 46, 0.4), transparent 55%),
+    repeating-linear-gradient(
+      135deg,
+      rgba(247, 246, 243, 0.05) 0px,
+      rgba(247, 246, 243, 0.05) 2px,
+      transparent 2px,
+      transparent 18px
+    );
   color: var(--color-chalk);
   border-radius: var(--radius-md);
   padding: 40px 32px;
