@@ -1,15 +1,12 @@
-import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation, Link } from "react-router-dom";
 
 import Navbar from "./components/common/Navbar";
 import Footer from "./components/common/Footer";
 import PlanList from "./components/plans/PlanList";
-import plansData from "./components/plans/plansData";
+import plansData from "./data/plansData";
 import MemberForm from "./components/members/MemberForm";
 import MemberTable from "./components/members/MemberTable";
-import { getEffectiveStatus } from "./components/members/MemberRow";
-
-const STORAGE_KEY = "fitmember_members";
+import { MembersProvider, useMembers } from "./context/MembersContext";
 
 const features = [
   {
@@ -58,16 +55,9 @@ const registerChecklist = [
   "A membership plan",
 ];
 
-function loadMembers() {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
-  } catch {
-    return [];
-  }
-}
+function HomePage() {
+  const { stats } = useMembers();
 
-function HomePage({ activeCount }) {
   return (
     <>
       <section className="home-hero">
@@ -112,9 +102,9 @@ function HomePage({ activeCount }) {
           </div>
 
           <div className="home-hero__stat">
-            <span className="home-hero__stat-number">{activeCount}</span>
+            <span className="home-hero__stat-number">{stats.active}</span>
             <span className="home-hero__stat-label">
-              active member{activeCount === 1 ? "" : "s"} on record
+              active member{stats.active === 1 ? "" : "s"} on record
             </span>
           </div>
         </div>
@@ -200,7 +190,7 @@ function PlansPage() {
   );
 }
 
-function RegisterPage({ onAddMember }) {
+function RegisterPage() {
   const location = useLocation();
   const presetPlanId = location.state?.planId ?? "";
   const presetPlan = plansData.find((plan) => plan.id === presetPlanId);
@@ -215,7 +205,7 @@ function RegisterPage({ onAddMember }) {
         </p>
 
         <div className="register-layout">
-          <MemberForm onAddMember={onAddMember} presetPlanId={presetPlanId} />
+          <MemberForm presetPlanId={presetPlanId} />
 
           <aside className="register-panel">
             {presetPlan ? (
@@ -265,13 +255,8 @@ function RegisterPage({ onAddMember }) {
   );
 }
 
-function ManagePage({ members, onToggleStatus, onDelete }) {
-  const total = members.length;
-  const activeCount = members.filter((member) => getEffectiveStatus(member) === "Active").length;
-  const expiredCount = members.filter((member) => getEffectiveStatus(member) === "Expired").length;
-  const suspendedCount = members.filter(
-    (member) => getEffectiveStatus(member) === "Suspended"
-  ).length;
+function ManagePage() {
+  const { stats } = useMembers();
 
   return (
     <section className="page-section">
@@ -284,82 +269,47 @@ function ManagePage({ members, onToggleStatus, onDelete }) {
 
         <div className="manage-stats">
           <div className="manage-stat-card">
-            <span className="manage-stat-card__value">{total}</span>
+            <span className="manage-stat-card__value">{stats.total}</span>
             <span className="manage-stat-card__label">Total members</span>
           </div>
           <div className="manage-stat-card manage-stat-card--active">
-            <span className="manage-stat-card__value">{activeCount}</span>
+            <span className="manage-stat-card__value">{stats.active}</span>
             <span className="manage-stat-card__label">Active</span>
           </div>
           <div className="manage-stat-card manage-stat-card--expired">
-            <span className="manage-stat-card__value">{expiredCount}</span>
+            <span className="manage-stat-card__value">{stats.expired}</span>
             <span className="manage-stat-card__label">Expired</span>
           </div>
           <div className="manage-stat-card manage-stat-card--suspended">
-            <span className="manage-stat-card__value">{suspendedCount}</span>
+            <span className="manage-stat-card__value">{stats.suspended}</span>
             <span className="manage-stat-card__label">Suspended</span>
           </div>
         </div>
 
-        <MemberTable members={members} onToggleStatus={onToggleStatus} onDelete={onDelete} />
+        <MemberTable />
       </div>
     </section>
   );
 }
 
 function App() {
-  const [members, setMembers] = useState(loadMembers);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(members));
-  }, [members]);
-
-  function addMember(newMember) {
-    setMembers((prev) => [...prev, newMember]);
-  }
-
-  function deleteMember(id) {
-    setMembers((prev) => prev.filter((member) => member.id !== id));
-  }
-
-  function toggleMemberStatus(id) {
-    setMembers((prev) =>
-      prev.map((member) =>
-        member.id === id
-          ? { ...member, status: member.status === "Suspended" ? "Active" : "Suspended" }
-          : member
-      )
-    );
-  }
-
-  const activeCount = members.filter(
-    (member) => getEffectiveStatus(member) === "Active"
-  ).length;
-
   return (
-    <div className="app-shell">
-      <Navbar />
+    <MembersProvider>
+      <div className="app-shell">
+        <Navbar />
 
-      <main className="app-main">
-        <Routes>
-          <Route path="/" element={<HomePage activeCount={activeCount} />} />
-          <Route path="/plans" element={<PlansPage />} />
-          <Route path="/register" element={<RegisterPage onAddMember={addMember} />} />
-          <Route
-            path="/manage"
-            element={
-              <ManagePage
-                members={members}
-                onToggleStatus={toggleMemberStatus}
-                onDelete={deleteMember}
-              />
-            }
-          />
-        </Routes>
-      </main>
+        <main className="app-main">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/plans" element={<PlansPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/manage" element={<ManagePage />} />
+          </Routes>
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </MembersProvider>
   );
 }
 

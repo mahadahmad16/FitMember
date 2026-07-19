@@ -1,4 +1,4 @@
-import plansData from "../plans/plansData";
+import plansData from "../../data/plansData";
 
 export function getEffectiveStatus(member) {
   if (member.status === "Suspended") return "Suspended";

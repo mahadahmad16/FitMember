@@ -1,8 +1,10 @@
 import { useState } from "react";
 import MemberRow from "./MemberRow";
 import Modal from "../common/Modal";
+import { useMembers } from "../../context/MembersContext";
 
-function MemberTable({ members, onToggleStatus, onDelete }) {
+function MemberTable() {
+  const { members, toggleMemberStatus, deleteMember } = useMembers();
   const [searchTerm, setSearchTerm] = useState("");
   const [pendingDeleteId, setPendingDeleteId] = useState(null);
 
@@ -13,7 +15,7 @@ function MemberTable({ members, onToggleStatus, onDelete }) {
   const memberPendingDelete = members.find((member) => member.id === pendingDeleteId);
 
   function confirmDelete() {
-    onDelete(pendingDeleteId);
+    deleteMember(pendingDeleteId);
     setPendingDeleteId(null);
   }
 
@@ -57,7 +59,7 @@ function MemberTable({ members, onToggleStatus, onDelete }) {
                 <MemberRow
                   key={member.id}
                   member={member}
-                  onToggleStatus={onToggleStatus}
+                  onToggleStatus={toggleMemberStatus}
                   onDelete={setPendingDeleteId}
                 />
               ))}

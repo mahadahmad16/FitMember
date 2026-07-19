@@ -1,4 +1,4 @@
-import plansData from "./plansData";
+import plansData from "../../data/plansData";
 import PlanCard from "./PlanCard";
 
 function PlanList({ onChoosePlan }) {

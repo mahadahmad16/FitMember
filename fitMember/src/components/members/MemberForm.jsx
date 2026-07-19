@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import plansData from "../plans/plansData";
+import plansData from "../../data/plansData";
+import { useMembers } from "../../context/MembersContext";
 
 const emptyForm = {
   fullName: "",
@@ -52,7 +53,8 @@ function validate(form) {
   return errors;
 }
 
-function MemberForm({ onAddMember, presetPlanId }) {
+function MemberForm({ presetPlanId }) {
+  const { addMember } = useMembers();
   const [form, setForm] = useState(emptyForm);
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
@@ -95,7 +97,7 @@ function MemberForm({ onAddMember, presetPlanId }) {
       status: "Active",
     };
 
-    onAddMember(newMember);
+    addMember(newMember);
     setForm({ ...emptyForm, startDate: new Date().toISOString().slice(0, 10) });
     setSuccessMessage(`${newMember.fullName} was registered successfully.`);
   }
