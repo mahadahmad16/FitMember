@@ -1,5 +1,5 @@
 import plansData from "../../data/plansData";
-import PlanCard from "./PlanCard";
+import PlanCard from "./Plancard";
 
 function PlanList({ onChoosePlan }) {
   return (
