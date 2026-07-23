@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import plansData from "../../data/plansData";
 import { useMembers } from "../../context/MembersContext";
+import { validateMemberForm } from "../../utils/validators";
+import { addOneMonth, getTodayISODate } from "../../utils/helpers";
 
 const emptyForm = {
   fullName: "",
@@ -9,49 +11,8 @@ const emptyForm = {
   age: "",
   gender: "",
   planId: "",
-  startDate: new Date().toISOString().slice(0, 10),
+  startDate: getTodayISODate(),
 };
-
-function addOneMonth(dateString) {
-  const date = new Date(dateString);
-  date.setMonth(date.getMonth() + 1);
-  return date.toISOString().slice(0, 10);
-}
-
-function validate(form) {
-  const errors = {};
-
-  if (form.fullName.trim().length < 3) {
-    errors.fullName = "Enter the member's full name (at least 3 characters).";
-  }
-
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-    errors.email = "Enter a valid email address.";
-  }
-
-  if (!/^0\d{2,4}-?\d{6,8}$/.test(form.phone.trim())) {
-    errors.phone = "Enter a valid phone number, e.g. 0300-1234567.";
-  }
-
-  const age = Number(form.age);
-  if (!form.age || age < 12 || age > 80) {
-    errors.age = "Age must be between 12 and 80.";
-  }
-
-  if (!form.gender) {
-    errors.gender = "Select a gender.";
-  }
-
-  if (!form.planId) {
-    errors.planId = "Select a membership plan.";
-  }
-
-  if (!form.startDate) {
-    errors.startDate = "Select a start date.";
-  }
-
-  return errors;
-}
 
 function MemberForm({ presetPlanId }) {
   const { addMember } = useMembers();
@@ -78,7 +39,7 @@ function MemberForm({ presetPlanId }) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    const validationErrors = validate(form);
+    const validationErrors = validateMemberForm(form);
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) return;
@@ -91,14 +52,14 @@ function MemberForm({ presetPlanId }) {
       age: Number(form.age),
       gender: form.gender,
       planId: form.planId,
-      joinDate: new Date().toISOString().slice(0, 10),
+      joinDate: getTodayISODate(),
       startDate: form.startDate,
       expiryDate: addOneMonth(form.startDate),
       status: "Active",
     };
 
     addMember(newMember);
-    setForm({ ...emptyForm, startDate: new Date().toISOString().slice(0, 10) });
+    setForm({ ...emptyForm, startDate: getTodayISODate() });
     setSuccessMessage(`${newMember.fullName} was registered successfully.`);
   }
 

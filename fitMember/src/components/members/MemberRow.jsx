@@ -1,11 +1,5 @@
 import plansData from "../../data/plansData";
-
-export function getEffectiveStatus(member) {
-  if (member.status === "Suspended") return "Suspended";
-  const today = new Date().toISOString().slice(0, 10);
-  if (member.expiryDate < today) return "Expired";
-  return "Active";
-}
+import { getEffectiveStatus } from "../../utils/helpers";
 
 function MemberRow({ member, onToggleStatus, onDelete }) {
   const plan = plansData.find((item) => item.id === member.planId);

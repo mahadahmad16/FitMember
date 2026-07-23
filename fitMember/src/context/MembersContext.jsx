@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo } from "react";
-import { getEffectiveStatus } from "../components/members/MemberRow";
+import { getEffectiveStatus } from "../utils/helpers";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const MembersContext = createContext(null);
